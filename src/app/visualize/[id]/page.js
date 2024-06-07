@@ -3,56 +3,54 @@ import React, { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
 import NextImage from "next/image";
 import styles from "../../../styles/page.module.css";
-import logoStep from "../../../../public/logoStepTransparent.png";
-import copyIcon from "../../../../public/copy.png";
+import logoStep from "../../../../public/logoStep.png";
+import copyIcon from "../../../imgs/icons/copy.png";
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { loadGLBModel } from "../../utils";
-import { fetchScene } from "./utils";
-import { db } from "@/firebase";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { fetchScene } from "../../actions/firebasee/fetch-scene";
+import { loadGLBModel } from "../../actions/three/load-glb-model";
+import { createSceneLayout } from "../../actions/three/create-scene-layout";
+import { getTextures } from "../../actions/misc/get-textures";
+import { db } from "@/src/firebase";
 import { getDoc, doc } from "firebase/firestore";
-import { useLanguage } from "@/context/ContentContext";
+import { getBase64Data } from "../../actions/firebasee/get-base-64-data";
+import { sortObjectsByIndex } from "../../actions/canvas/sort-objects-by-index";
 
-const FabricCanvas = ({ params }) => {
-  const { content } = useLanguage();
+const FabricCanvas = ({ canvasRef }) => {
+  return <canvas ref={canvasRef}></canvas>;
+};
+
+const Visualize = ({ params }) => {
   const canvasRefs = useRef({});
   const containerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [objectNames, setObjectNames] = useState([]);
-
   let orbit;
 
   const model = params.id[params.id.length - 1];
 
   const modelUrls = {
-    1: "/hoodieTest.glb",
-    2: "/1.glb",
-    3: "/2.glb",
-    4: "/3.glb",
-    5: "/4.glb",
+    1: "/glbs/meshes/hoodie11.glb",
+    2: "/glbs/meshes/1.glb",
+    3: "/glbs/meshes/2.glb",
+    4: "/glbs/meshes/3.glb",
+    5: "/glbs/meshes/4.glb",
   };
 
   const url = modelUrls[model] || null;
 
-  const mesh = useRef(null);
-
-  const getBase64Data = async (docId) => {
-    try {
-      const docSnap = await getDoc(doc(db, "base64", docId));
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        return data.base64;
-      } else {
-        console.log("No such document!");
-        return null;
-      }
-    } catch (e) {
-      console.error("Error getting document:", e);
-      return null;
-    }
-  };
+  let mesh = useRef(null);
 
   useEffect(() => {
+    const textures = getTextures();
+
+    const sceneLayout = createSceneLayout();
+    const scene = sceneLayout.scene;
+    const camera = sceneLayout.camera;
+    const renderer = sceneLayout.renderer;
+    orbit = sceneLayout.orbit;
+    containerRef.current.appendChild(renderer.domElement);
+    loadGLBModel(url, scene, setIsLoading, textures);
+
     const initializeCanvas = async () => {
       const sceneDataArray = await fetchScene(params);
 
@@ -77,26 +75,16 @@ const FabricCanvas = ({ params }) => {
 
         if (texts && texts.length > 0) {
           texts.forEach(
-            ({
-              text,
-              fontFamily,
-              color,
-              top,
-              left,
-              fontSize,
-              width,
-              textAlign,
-            }) => {
+            ({ text, fontFamily, color, top, left, fontSize, index }) => {
               const textObject = new fabric.Textbox(text, {
                 fontFamily,
                 fontSize,
                 fill: color,
                 left,
                 top,
-                width,
                 originX: "center",
                 originY: "center",
-                textAlign,
+                index,
               });
               canvas.add(textObject);
             }
@@ -105,7 +93,7 @@ const FabricCanvas = ({ params }) => {
 
         if (images && images.length > 0) {
           images.forEach(
-            async ({
+            ({
               base64,
               top,
               left,
@@ -115,30 +103,37 @@ const FabricCanvas = ({ params }) => {
               scaleY,
               angle,
               flipX,
+              index,
             }) => {
-              const base64String = await getBase64Data(base64);
-              if (base64String) {
-                fabric.Image.fromURL(
-                  base64String,
-                  (img) => {
-                    img.set({
-                      left,
-                      top,
-                      scaleX,
-                      scaleY,
-                      width,
-                      height,
-                      angle,
-                      originX: "center",
-                      originY: "center",
-                      flipX,
-                    });
+              getBase64Data(base64)
+                .then((base64String) => {
+                  if (base64String) {
+                    fabric.Image.fromURL(
+                      base64String,
+                      (img) => {
+                        img.set({
+                          left,
+                          top,
+                          scaleX,
+                          scaleY,
+                          width,
+                          height,
+                          angle,
+                          originX: "center",
+                          originY: "center",
+                          flipX,
+                          index,
+                        });
 
-                    canvas.add(img);
-                  },
-                  { crossOrigin: "anonymous" } // Add crossOrigin to handle CORS if needed
-                );
-              }
+                        canvas.add(img);
+                      },
+                      { crossOrigin: "anonymous" } // Add crossOrigin to handle CORS if needed
+                    );
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error converting to base64:", error);
+                });
             }
           );
         }
@@ -150,18 +145,21 @@ const FabricCanvas = ({ params }) => {
 
       setTimeout(() => {
         scene.children.forEach((child) => {
-          console.log(child instanceof THREE.Group);
           if (child instanceof THREE.Group) {
-            console.log("WW", child);
             child.children.forEach((meshh) => {
-              console.log(meshh);
               if (Object.keys(canvasRefs.current).includes(meshh.name)) {
                 mesh.current = meshh;
-                console.log(meshh.name);
+                const canvas = canvasRefs.current[meshh.name];
+
+                canvas._objects.sort((a, b) => a.index - b.index);
+                canvas.renderAll();
+                console.log(canvas._objects);
+
                 try {
                   const newTexture = new THREE.CanvasTexture(
                     canvasRefs.current[meshh.name].lowerCanvasEl
                   );
+
                   newTexture.flipY = false;
                   mesh.current.material.map = newTexture;
                   mesh.current.material.map.needsUpdate = true;
@@ -174,16 +172,13 @@ const FabricCanvas = ({ params }) => {
         });
 
         animate();
-      }, 5000);
+      }, 1000);
     };
 
     initializeCanvas();
+    //const scene = new THREE.Scene();
 
-    const scene = new THREE.Scene();
-
-    loadGLBModel(url, scene, setIsLoading, setObjectNames);
-
-    const camera = new THREE.PerspectiveCamera(
+    /* const camera = new THREE.PerspectiveCamera(
       35,
       window.innerWidth / window.innerHeight,
       0.1,
@@ -225,13 +220,9 @@ const FabricCanvas = ({ params }) => {
       MIDDLE: THREE.MOUSE.DOLLY,
       RIGHT: null,
     };
-    orbit.touches = {
-      ONE: THREE.TOUCH.ROTATE,
-      TWO: null,
-    };
     orbit.enabled = true;
     orbit.minDistance = 16.1;
-    orbit.maxDistance = 35;
+    orbit.maxDistance = 35;*/
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -239,28 +230,30 @@ const FabricCanvas = ({ params }) => {
       orbit.update();
     };
 
-    return () => {};
-  }, [params]);
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
 
-  const copyToClipboard = () => {
-    navigator.clipboard
-      .writeText(`http://localhost:3000/visualize/${params.id}`)
-      .then(
-        () => {
-          alert(content.successCopy); // Optionally show a message
-        },
-        (err) => {
-          console.error("Não foi possível copiar o link: ", err); // Error handling
-        }
-      );
-  };
+    window.addEventListener("resize", onWindowResize);
+
+    return () => {
+      window.removeEventListener("resize", onWindowResize);
+      renderer.domElement.remove();
+      renderer.dispose();
+    };
+  }, [params]);
 
   return (
     <>
       <div ref={containerRef}></div>
-      <button onClick={copyToClipboard} className={styles.copiaTextMain}>
+
+      <button className={styles.copiaTextMain}>
         <NextImage src={copyIcon} width={17} height={17} />
-        <p className={styles.copiaText}>{content.copyLink}</p>
+        <p className={styles.copiaText} style={{ zIndex: "1000" }}>
+          Copia o link para poderes partilhar a tua obra!
+        </p>
       </button>
       <div className={styles.poweredTextMain}>
         <p className={styles.poweredText}>Powered by</p>
@@ -275,4 +268,4 @@ const FabricCanvas = ({ params }) => {
   );
 };
 
-export default FabricCanvas;
+export default Visualize;

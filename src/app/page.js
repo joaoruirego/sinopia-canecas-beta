@@ -1,59 +1,36 @@
 "use client";
 import Head from "next/head";
-import ThreeDViewer from "./ThreeDViewer";
-import { useState, useEffect } from "react";
+import ThreeDViewer from "./components/ThreeDViewer";
+import { useState } from "react";
 import NextImage from "next/image";
 import styles from "../styles/page.module.css";
-import logo from "../imgs/logoAllkits.png";
-import logoStep from "../../public/logoStepTransparent.png";
-import ImageEditor from "./ImageEditor";
-import { useLanguage } from "@/context/ContentContext";
+import logo from "../imgs/logo_sinopia.png";
+import logoStep from "../../public/logoStepNew.png";
 
 const Home = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const { language, content, setLanguage } = useLanguage();
-
   return (
-    <div>
+    <div style={{ overflowX: "hidden", overflowY: "hidden", width: "100%" }}>
       <Head>
-        <title>Allkits {content.simuladorTitle}</title>
-        {/* <meta name="description" content="Your 3D Sweat Design Simulator" /> */}
+        <title>Sinopia Simulator</title>
+        <meta name="description" content="Your 3D Sweat Design Simulator" />
         <link rel="icon" href="/favicon.ico" />
-
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1"
-        />
       </Head>
       <div className={styles.titleZone}>
         <div className={styles.titleStruct}>
-          <NextImage src={logo} width={80} height={35} />
-          <p className={styles.desc}>{content.simuladorTitle}</p>
+          <NextImage src={logo} width={170} height={41} />
+          <p className={styles.desc}>Simulator</p>
         </div>
         <div className={styles.poweredTextMainHeader}>
           <p className={styles.poweredText}>Powered by</p>
           <NextImage
             className={styles.poweredLogo}
             src={logoStep}
-            width={105}
-            height={45}
+            width={53}
+            height={21}
           />
-        </div>
-        <div className={styles.buttonsLang}>
-          <button
-            style={{ fontWeight: language == "pt" ? "bold" : 400 }}
-            onClick={() => setLanguage("pt")}
-          >
-            PT
-          </button>
-          <button
-            style={{ fontWeight: language == "en" ? "bold" : 400 }}
-            onClick={() => setLanguage("en")}
-          >
-            EN
-          </button>
         </div>
       </div>
 
@@ -64,8 +41,9 @@ const Home = () => {
           alignItems: "center",
           justifyContent: "center",
           minHeight: "70vh",
-          backgroundColor: "#f4f4f4",
-          margin: "auto",
+          background:
+            "radial-gradient(circle, rgba(256, 256, 256, 1) 10%, rgba(240, 240, 240) 50%)",
+          //margin: "auto",
         }}
       >
         <ThreeDViewer product={product} />
