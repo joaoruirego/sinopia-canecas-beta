@@ -20,7 +20,7 @@ export function createSceneLayout() {
     1000
   );
   camera.position.z = 25;
-  camera.position.y = -5;
+  camera.position.y = 5;
 
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
   scene.add(ambientLight);
@@ -109,8 +109,8 @@ export function createSceneLayout() {
   };
   orbit.enablePan = false;
   orbit.enabled = true;
-  orbit.minDistance = 10;
-  orbit.maxDistance = 35;
+  orbit.minDistance = 5;
+  orbit.maxDistance = 25;
 
   //scene.fog = new THREE.FogExp2(0xf4f4f4, 0.0161);
 

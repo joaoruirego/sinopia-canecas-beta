@@ -28,7 +28,7 @@ export const uploadImage = (
         selectable: true,
         left: position.averageU * fabricCanvas.current.width,
         top: (position.averageV - 0.05) * fabricCanvas.current.height,
-        originX: "center",
+        originX: "flex-end",
         originY: "center",
         scaleX: scale * 0.5,
         scaleY: scale * 0.5,
