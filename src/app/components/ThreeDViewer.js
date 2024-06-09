@@ -22,6 +22,7 @@ import model4 from "@/src/imgs/hoodie-options/4foto.png";
 import model5 from "@/src/imgs/hoodie-options/1foto.png";
 import buildingIcon from "@/src/imgs/icons/buildingIcon.png";
 import shareIcon from "@/src/imgs/icons/iconShare.png";
+import logo from "@/src/imgs/logo_sinopia.png";
 
 //EXTERNAL FUNTIONS
 //THREE
@@ -720,6 +721,14 @@ const ThreeDViewer = () => {
         </div>
       )}
       <div ref={containerRef} style={{ height: "100%", width: "100%" }} />
+
+      <div className={styles.smallDevice}>
+        <header>
+          <NextImage src={logo} width={170} height={41} alt="Step" />
+          <p>Apenas disponível em Desktop e Tablet</p>
+          <b>Versão Beta</b>
+        </header>
+      </div>
       <>
         <div ref={editZoneRef} className={styles.editZone}>
           <div className={styles.nameZone}>

@@ -23,7 +23,7 @@ export function addTextbox(
   if (canvas) {
     const textbox = new fabric.Textbox(text, {
       left: canvas.width * position.averageU,
-      top: canvas.height * (position.averageV - 0.1),
+      top: canvas.height * (position.averageV + 0.15),
       originX: "center",
       originY: "center",
       width: 155,

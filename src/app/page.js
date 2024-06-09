@@ -23,15 +23,18 @@ const Home = () => {
           <NextImage src={logo} width={170} height={41} />
           <p className={styles.desc}>Simulator</p>
         </div>
-        <div className={styles.poweredTextMainHeader}>
-          <p className={styles.poweredText}>Powered by</p>
-          <NextImage
-            className={styles.poweredLogo}
-            src={logoStep}
-            width={53}
-            height={21}
-          />
-        </div>
+
+        <a className={styles.stepAnchor} href="https://meetstep.com">
+          <div className={styles.poweredTextMainHeader}>
+            <p className={styles.poweredText}>Powered by</p>
+            <NextImage
+              className={styles.poweredLogo}
+              src={logoStep}
+              width={53}
+              height={21}
+            />
+          </div>
+        </a>
       </div>
 
       <main

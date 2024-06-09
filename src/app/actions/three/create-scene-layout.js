@@ -109,8 +109,8 @@ export function createSceneLayout() {
   };
   orbit.enablePan = false;
   orbit.enabled = true;
-  orbit.minDistance = 5;
-  orbit.maxDistance = 25;
+  orbit.minDistance = 12;
+  orbit.maxDistance = 20;
 
   //scene.fog = new THREE.FogExp2(0xf4f4f4, 0.0161);
 

@@ -27,11 +27,11 @@ export const uploadImage = (
       fabricImage.set({
         selectable: true,
         left: position.averageU * fabricCanvas.current.width,
-        top: (position.averageV - 0.05) * fabricCanvas.current.height,
-        originX: "flex-end",
+        top: (position.averageV + 0.15) * fabricCanvas.current.height,
+        originX: "center",
         originY: "center",
-        scaleX: scale * 0.5,
-        scaleY: scale * 0.5,
+        scaleX: scale * 0.8,
+        scaleY: scale * 0.8,
         cornerSize:
           fabricImage.width < fabricImage.height
             ? (fabricImage.width * scale) / 10
