@@ -15,10 +15,10 @@ import Link from "next/link";
 import galeryIcon from "@/src/imgs/icons/galeryBlack.png";
 import textIcon from "@/src/imgs/icons/textIcon.png";
 import colorIcon from "@/src/imgs/icons/colorIcon.webp";
-import model1 from "@/src/imgs/hoodie-options/3foto.png";
-import model2 from "@/src/imgs/hoodie-options/5foto.png";
+import model1 from "@/src/imgs/hoodie-options/1_foto_1.png";
+import model2 from "@/src/imgs/hoodie-options/1_foto_1.png";
 import model3 from "@/src/imgs/hoodie-options/2foto.png";
-import model4 from "@/src/imgs/hoodie-options/4foto.png";
+import model4 from "@/src/imgs/hoodie-options/1_foto_1.png";
 import model5 from "@/src/imgs/hoodie-options/1foto.png";
 import buildingIcon from "@/src/imgs/icons/buildingIcon.png";
 import shareIcon from "@/src/imgs/icons/iconShare.png";
@@ -930,24 +930,7 @@ const ThreeDViewer = () => {
           </div>
 
           <div className={styles.exportBtnNot}>
-            <button
-              onClick={() => {
-                getActiveScene(
-                  setDocId,
-                  setAllCanvasData,
-                  clientData,
-                  model,
-                  sceneRef
-                );
-                calculateArea(fabricCanvases, sceneRef, setAnimatedPrice);
-                setPreview(!preview);
-                setTimeout(() => {
-                  closeEditor();
-                }, 200);
-                closeAllTabs();
-              }}
-              style={buttonStyle}
-            >
+            <button style={buttonStyle}>
               {preview ? (
                 windowWidth < 450 ? (
                   <p
@@ -1038,40 +1021,6 @@ const ThreeDViewer = () => {
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
-                  magicLoading(backgroundMagic, modelos, titleModels);
-                  setTimeout(() => {
-                    setEscolheBtn(true);
-                  }, 800);
-                  setModel("5");
-                }}
-              >
-                <NextImage
-                  src={model5}
-                  className={styles.modelosImgs}
-                  width={150}
-                  height={150}
-                />
-              </button>
-              <button
-                className={styles.modeloBtn}
-                onClick={() => {
-                  setModel("3");
-                  magicLoading(backgroundMagic, modelos, titleModels);
-                  setTimeout(() => {
-                    setEscolheBtn(true);
-                  }, 800);
-                }}
-              >
-                <NextImage
-                  src={model3}
-                  className={styles.modelosImgs}
-                  width={150}
-                  height={150}
-                />
-              </button>
-              <button
-                className={styles.modeloBtn}
-                onClick={() => {
                   setModel("1");
                   magicLoading(backgroundMagic, modelos, titleModels);
                   setTimeout(() => {
@@ -1082,41 +1031,33 @@ const ThreeDViewer = () => {
                 <NextImage
                   src={model1}
                   className={styles.modelosImgs}
-                  width={150}
+                  width={165}
                   height={150}
                 />
               </button>
               <button
-                className={styles.modeloBtn}
-                onClick={() => {
-                  setModel("4");
-                  magicLoading(backgroundMagic, modelos, titleModels);
-                  setTimeout(() => {
-                    setEscolheBtn(true);
-                  }, 800);
+                style={{
+                  opacity: 0.5,
+                  cursor: "not-allowed",
+                  backdropFilter: "blur(15px)",
                 }}
+                className={styles.modeloBtn}
               >
                 <NextImage
                   src={model4}
                   className={styles.modelosImgs}
-                  width={150}
+                  width={165}
                   height={150}
                 />
               </button>
               <button
+                style={{ opacity: 0.5, cursor: "not-allowed" }}
                 className={styles.modeloBtn}
-                onClick={() => {
-                  setModel("2");
-                  magicLoading(backgroundMagic, modelos, titleModels);
-                  setTimeout(() => {
-                    setEscolheBtn(true);
-                  }, 800);
-                }}
               >
                 <NextImage
                   src={model2}
                   className={styles.modelosImgs}
-                  width={150}
+                  width={165}
                   height={150}
                 />
               </button>

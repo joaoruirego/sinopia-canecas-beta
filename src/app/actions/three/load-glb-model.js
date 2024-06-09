@@ -64,7 +64,7 @@ export const loadGLBModel = (path, scenario, setIsLoading, textures) => {
         .start();
 
       new TWEEN.Tween({ x: 0, y: 0, z: 0 })
-        .to({ x: 0, y: Math.PI * 2, z: 0 }, 2000)
+        .to({ x: 0, y: Math.PI * 2.76, z: 0 }, 2000)
         .easing(TWEEN.Easing.Exponential.InOut)
         .onUpdate((rotation) => {
           gltf.scene.rotation.set(rotation.x, rotation.y, rotation.z);
