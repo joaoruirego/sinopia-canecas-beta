@@ -411,9 +411,7 @@ const ImageEditor = forwardRef(
                           />
                         </div>
                         <div>
-                          <p className={styles.titleText}>
-                            Espelhar Imagem Horizontalmente
-                          </p>
+                          <p className={styles.titleText}>Espelhar Imagem</p>
                           <p className={styles.infoText}>
                             Vê a tua imagem espelhada
                           </p>

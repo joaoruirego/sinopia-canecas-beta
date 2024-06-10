@@ -1037,9 +1037,8 @@ const ThreeDViewer = () => {
               </button>
               <button
                 style={{
-                  opacity: 0.5,
+                  opacity: 0.3,
                   cursor: "not-allowed",
-                  backdropFilter: "blur(15px)",
                 }}
                 className={styles.modeloBtn}
               >
@@ -1051,7 +1050,7 @@ const ThreeDViewer = () => {
                 />
               </button>
               <button
-                style={{ opacity: 0.5, cursor: "not-allowed" }}
+                style={{ opacity: 0.3, cursor: "not-allowed" }}
                 className={styles.modeloBtn}
               >
                 <NextImage
