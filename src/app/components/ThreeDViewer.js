@@ -248,7 +248,7 @@ const ThreeDViewer = () => {
 
     const url =
       model == 1
-        ? "/glbs/meshes/mugFinalFinal.glb"
+        ? "/glbs/meshes/mug.glb"
         : model == 2
         ? "/glbs/meshes/1.glb"
         : model == 3

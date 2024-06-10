@@ -11,6 +11,8 @@ export const uploadImage = (
   let position = calculateAverageUV(editingComponent.current);
   let scaleF = getUVDimensions(editingComponent.current).smallerSide * 0.5;
 
+  console.log("position", position);
+
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
@@ -27,7 +29,7 @@ export const uploadImage = (
       fabricImage.set({
         selectable: true,
         left: position.averageU * fabricCanvas.current.width,
-        top: (position.averageV + 0.15) * fabricCanvas.current.height,
+        top: position.averageV * fabricCanvas.current.height,
         originX: "center",
         originY: "center",
         scaleX: scale * 0.8,

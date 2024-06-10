@@ -39,7 +39,7 @@ export function scaleRotateMove(
   const isImageSelected = selectImageResult.isImageSelected;
 
   const minScaleAllowed = canvasSize / 20;
-  const maxScaleAllowed = canvasSize / 1.5;
+  const maxScaleAllowed = canvasSize;
 
   let deltaUV, dUV;
   let dMouse = new THREE.Vector2(
@@ -60,6 +60,16 @@ export function scaleRotateMove(
       editingComponent.current,
       currentMouse
     )[0];
+
+    if (
+      intersection != null &&
+      (intersection.uv.x > 1 ||
+        intersection.uv.x < 0 ||
+        intersection.uv.y > 1 ||
+        intersection.uv.y < 0)
+    ) {
+      intersection = null;
+    }
   }
 
   if (isImageSelected) {
@@ -466,28 +476,6 @@ export function scaleRotateMove(
             (objectRotation.current / 360 -
               Math.floor(objectRotation.current / 360));
 
-          if (rotation + initialAngle < 10 || rotation + initialAngle > 350) {
-            rotation = 0;
-            let addGuides = true;
-            fabricCanvas.current.forEachObject((obj, index) => {
-              if (obj instanceof fabric.Line) {
-                addGuides = false;
-              }
-            });
-
-            if (addGuides) {
-              let line = new fabric.Line(
-                [activeObject.left, activeObject.top, activeObject.left, 0],
-                {
-                  stroke: "#00bfff81",
-                  strokeWidth: 2,
-                  selectable: false,
-                }
-              );
-              fabricCanvas.current.add(line);
-            }
-          }
-
           activeObject.set({
             angle: initialAngle + rotation,
           });
@@ -564,9 +552,9 @@ export function scaleRotateMove(
           let lineH = new fabric.Line(
             [
               0,
-              (uvCenter.averageV - 0.05) * canvasH,
+              uvCenter.averageV * canvasH,
               canvasH * 2,
-              (uvCenter.averageV - 0.05) * canvasH,
+              uvCenter.averageV * canvasH,
             ],
             {
               stroke: "#00bfff81",
@@ -588,14 +576,14 @@ export function scaleRotateMove(
         const supLimU = uvCenter.averageU * canvasW + tolerance;
         const infLimU = uvCenter.averageU * canvasW - tolerance;
 
-        const supLimV = (uvCenter.averageV - 0.05) * canvasH + tolerance;
-        const infLimV = (uvCenter.averageV - 0.05) * canvasH - tolerance;
+        const supLimV = uvCenter.averageV * canvasH + tolerance;
+        const infLimV = uvCenter.averageV * canvasH - tolerance;
 
         if (uCoord < supLimU && uCoord > infLimU) {
           uCoord = uvCenter.averageU * canvasW;
         }
         if (vCoord < supLimV && vCoord > infLimV) {
-          vCoord = (uvCenter.averageV - 0.05) * canvasH;
+          vCoord = uvCenter.averageV * canvasH;
         }
 
         if (

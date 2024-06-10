@@ -9,12 +9,18 @@ function calculateAverageUV(mesh) {
 
   let totalU = 0;
   let totalV = 0;
-  const count = uvAttribute.count;
+  let count = 0;
+  const totalUV = uvAttribute.count;
 
   // Sum all UV coordinates
-  for (let i = 0; i < count; i++) {
-    totalU += uvAttribute.getX(i);
-    totalV += uvAttribute.getY(i);
+  for (let i = 0; i < totalUV; i++) {
+    let u = uvAttribute.getX(i);
+    let v = uvAttribute.getY(i);
+    if (u > 0 && u < 1 && v > 0 && v < 1) {
+      totalU += u;
+      totalV += v;
+      count += 1;
+    }
   }
 
   // Calculate averages
@@ -41,10 +47,12 @@ function getUVDimensions(mesh) {
     const u = uvAttribute.getX(i);
     const v = uvAttribute.getY(i);
 
-    if (u < minU) minU = u;
-    if (u > maxU) maxU = u;
-    if (v < minV) minV = v;
-    if (v > maxV) maxV = v;
+    if (u > 0 && u < 1 && v > 0 && v < 1) {
+      if (u < minU) minU = u;
+      if (u > maxU) maxU = u;
+      if (v < minV) minV = v;
+      if (v > maxV) maxV = v;
+    }
   }
 
   // Calculate dimensions
